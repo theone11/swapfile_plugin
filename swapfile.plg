@@ -66,7 +66,7 @@ echo "SWAP_NAME=\"$SWAP_NAME\"" >> ${SWAP_PLUGIN_PATH}/swapfile.cfg
 echo "SWAP_SIZE_MB=\"$SWAP_SIZE_MB\"" >> ${SWAP_PLUGIN_PATH}/swapfile.cfg
 echo "SWAP_DELETE=\"$SWAP_DELETE\"" >> ${SWAP_PLUGIN_PATH}/swapfile.cfg
 
-logger -trc.virtualbox -plocal7.info -is "Plugin configuration written"
+logger -trc.swapfile -plocal7.info -is "Plugin configuration written"
 }
 
 swap_start()
@@ -79,17 +79,17 @@ swap_start()
     SWAP_RUNNING=$(swapon -s | grep ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} | cut -d" " -f1)
 		# Check if swapfile already started
     if [ "$SWAP_RUNNING" == "${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}" ] ; then
-			logger -tswapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} already started"
+			logger -trc.swapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} already started"
 			return
 		else
 		  # Turn on Swapfile usage
       swapon -v ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
-			logger -tswapfile -plocal7.info -is " Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} started"
+			logger -trc.swapfile -plocal7.info -is " Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} started"
 		fi
 	# Swapfile does not exist
   else
 		# Create Swapfile
-		logger -tswapfile -plocal7.info -is "Creating ${SWAP_LOCATION}/${SWAP_FILENAME} please wait ..."
+		logger -trc.swapfile -plocal7.info -is "Creating ${SWAP_LOCATION}/${SWAP_FILENAME} please wait ..."
     dd if=/dev/zero of=${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} bs=1M count=${SWAP_SIZE_MB_NEW}
 		# Assign SWAP_NAME to Swapfile
     mkswap -L ${SWAP_NAME_NEW} ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
@@ -97,7 +97,7 @@ swap_start()
     chmod 600 ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
 		# Turn on Swapfile usage
     swapon -v ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
-		logger -tswapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} created and started"
+		logger -trc.swapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} created and started"
 	fi
 }
 
@@ -113,12 +113,12 @@ swap_stop()
     swapoff -a -v ${SWAP_LOCATION}/${SWAP_FILENAME}
 		if [ "$SWAP_DELETE" == "true" ] ; then
       rm ${SWAP_LOCATION}/${SWAP_FILENAME}
-      logger -tswapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} stopped and removed"
+      logger -trc.swapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} stopped and removed"
     else
-      logger -tswapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} stopped"
+      logger -trc.swapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} stopped"
     fi
 	else
-		logger -tswapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} not running"
+		logger -trc.swapfile -plocal7.info -is "Swapfile ${SWAP_LOCATION}/${SWAP_FILENAME} not running"
 	fi
 }
 
@@ -130,6 +130,83 @@ swap_restart()
 	swap_stop
 	sleep 3
 	swap_start
+}
+
+swap_getplgversions()
+#################
+# G E T P L G V E R S I O N S
+#################
+{
+# VirtualBox Plugin hosting server
+VBOX_PLG_HOSTING_SERVER="https://github.com/theone11/swapfile_plugin"
+# VirtualBox Plugin hosting server URL + filename
+VBOX_PLG_URL="https://raw.github.com/theone11/swapfile_plugin/master/swapfile.plg"
+# Get online/offline status of Virtualbox Plugin hosting server
+wget --quiet --spider --no-check-certificate $VBOX_PLG_HOSTING_SERVER
+VBOX_PLG_HOSTING_SERVER_EXISTS=$?
+# Check if Virtualbox Plugin hosting server is online
+if [ "$VBOX_PLG_HOSTING_SERVER_EXISTS" == "0" ] ; then
+  # Get latest version number from server
+  VBOX_PLG_ONLINE_VER=$(wget --no-check-certificate --quiet $VBOX_PLG_URL -O - | grep -m 1 "Release Version v" | awk 'gsub(/.*Release Version v|*/,"")')
+else
+  # Set version to server_down - does not exist
+  VBOX_PLG_ONLINE_VER="server_down"
+fi
+# Check if VirtualBox Plugin file exists online
+wget --quiet --spider --no-check-certificate $VBOX_PLG_URL
+VBOX_PLG_ONLINE_EXIST=$?
+
+# Check if local VirtualBox Plugin file exists
+if [ -f /boot/config/plugins/virtualbox.plg ] ; then
+  # Get existing version number from local file
+  VBOX_PLG_LOCAL_VER=$(grep -m 1 "Release Version v" /boot/config/plugins/swapfile.plg | awk 'gsub(/.*Release Version v|*/,"")')
+else
+  # Set version to no_local_plg - does not exist
+  VBOX_PLG_LOCAL_VER="no_local_plg"
+fi
+
+# Write status to update WEBUI
+write_status
+}
+
+swap_updateplg()
+#######################
+# U P D A T E P L G
+#######################
+{
+# Get online and local plugin versions
+swap_getplgversions
+
+# Check if Plugin hosting server is online
+if [ "$VBOX_PLG_HOSTING_SERVER_EXISTS" == "0" ] ; then
+  # Check if latest version is available on server
+  if [ "$VBOX_PLG_ONLINE_EXIST" == "0" ] ; then
+    # Check if online and local versions are different
+    if [ "$VBOX_PLG_ONLINE_VER" != "$VBOX_PLG_LOCAL_VER" ] ; then
+      # Check if local plugin doesn't exist
+      if [ "$VBOX_PLG_LOCAL_VER" == "no_local_plg" ] ; then
+        logger -trc.swapfile -plocal7.info -is "Local plugin does not exist. Installing latest plugin version from hosting server (v$VBOX_PLG_ONLINE_VER)"
+      else
+        logger -trc.swapfile -plocal7.info -is "Upgrading local plugin (v$VBOX_PLG_LOCAL_VER) to hosting server plugin (v$VBOX_PLG_ONLINE_VER)"
+      fi
+      # Download new VirtualBox Plugin version
+      wget --no-check-certificate --quiet $VBOX_PLG_URL -O /boot/config/plugins/swapfile.plg
+      # Stop vboxwebsrv and all Virtual Machines
+      swap_stop
+      # Install new VirtualBox Plugin
+      /usr/local/sbin/installplg /boot/config/plugins/swapfile.plg
+      logger -trc.swapfile -plocal7.info -is "New/Updated plugin installation complete"
+    # Virtualbox plugin hosting server is offline
+    else
+      logger -trc.swapfile -plocal7.info -is "Local plugin is the same version as on hosting server (v$VBOX_PLG_LOCAL_VER)"
+    fi
+  # Web version and local version are the same
+  else
+    logger -trc.swapfile -plocal7.info -is "Plugin does not exist on plugin hosting server - Cannot download new plugin"
+  fi
+else
+  logger -trc.swapfile -plocal7.info -is "VirtualBox Plugin hosting servers is OFFLINE - Cannot check for new packages versions"
+fi
 }
 
 [ -f /boot/config/plugins/swapfile/swapfile.cfg ] && source /boot/config/plugins/swapfile/swapfile.cfg
@@ -149,7 +226,7 @@ if [ $1 == "updatecfg" ] ; then
   SWAP_SIZE_MB_NEW=$6
   SWAP_DELETE_NEW=$7
   if [ "${SWAP_LOCATION}/${SWAP_FILENAME}" !=  "${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}" ] || [ "$SWAP_NAME" != "$SWAP_NAME_NEW" ] || [ "$SWAP_SIZE" != "$SWAP_SIZE_NEW" ] ; then
-    logger -tswapfile -plocal7.info -is "New Swapfile configuration is being implemented, Please wait ..."
+    logger -trc.swapfile -plocal7.info -is "New Swapfile configuration is being implemented, Please wait ..."
     # Enable deletion of eisting Swapfile (if exists)
     SWAP_DELETE="true"
     # Restart Swapfile with new configuration
@@ -177,9 +254,15 @@ case "$1" in
 	'writecfg')
 		write_cfg
 	;;
+	'updateplg')
+		swap_updateplg
+	;;
+	'getplgversions')
+		swap_getplgversions
+	;;
 	
 	*)
-		echo "usage $0 start | stop | restart | updatecfg | writecfg"
+		echo "usage $0 start | stop | restart | updatecfg | writecfg | updateplg | getplgversions"
 esac
 ]]>
 </INLINE>
@@ -241,6 +324,8 @@ Title="Swapfile"
 <![CDATA[
 
 <?PHP
+shell_exec("/etc/rc.d/rc.virtualbox getplgversions");
+
 $swapfile_cfg = parse_ini_file("/boot/config/plugins/swapfile/swapfile.cfg");
 
 $swap_location = $swapfile_cfg['SWAP_LOCATION'];
