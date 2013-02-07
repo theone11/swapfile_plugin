@@ -459,10 +459,20 @@ $version_actions_exist = "false";
   <br></br>
 
   <div style="border: 0px solid black;">
-    Swapfile <?=$swapfile_location."/".$swapfile_filename;?> exists: <?=$swapfile_exists;?>
-    Swapfile <?=$swapfile_location."/".$swapfile_filename;?> in use: <?=$swapfile_running;?>
-    Swapfile <?=$swapfile_location."/".$swapfile_filename;?> size: <?=print('%.3f MB', intval($swapfile_size)/1024);?>
-    Swapfile <?=$swapfile_location."/".$swapfile_filename;?> usage: <?=print('%.3f MB', intval($swapfile_usage)/1024);?>
+    Swap file <?=$swapfile_location."/".$swapfile_filename;?> exists:
+      <?if ($swapfile_exists == "Yes") :?>
+        <span class="green-text"> &#10004></span>
+      <?else:?>
+        <span class="orange-text"> &#10006></span>
+      <?endif;?>
+    Swap file <?=$swapfile_location."/".$swapfile_filename;?> in use:
+      <?if ($swapfile_running == "Yes") :?>
+        <span class="green-text"> &#10004></span>
+      <?else:?>
+        <span class="orange-text"> &#10006></span>
+      <?endif;?>
+    Swap file <?=$swapfile_location."/".$swapfile_filename;?> size: <?=print('%.3f MB', intval($swapfile_size)/1024);?>
+    Swap file <?=$swapfile_location."/".$swapfile_filename;?> usage: <?=print('%.3f MB', intval($swapfile_usage)/1024);?>
 
     Swapfile Plugin available on hosting server:
       <?if ($plg_server == "0") :?>
@@ -576,10 +586,10 @@ $version_actions_exist = "false";
       <table>
         <tr>
           <td colspan="2" align="center">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile updatecfg">
-            <input type="submit" name="runCmd" value="Save Below Configuration">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile implement">
-            <input type="submit" name="runCmd" value="Save and Implement Below Configuration">
+            <input type="hidden" name="cmd1" value="/etc/rc.d/rc.swapfile updatecfg">
+            <input type="submit" name="runCmd1" value="Save Below Configuration">
+            <input type="hidden" name="cmd2" value="/etc/rc.d/rc.swapfile implement">
+            <input type="submit" name="runCmd2" value="Save and Implement Below Configuration">
             <button type="button" onClick="done();">Return to unRAID Settings Page</button>
           </td>
         </tr>
@@ -596,7 +606,7 @@ $version_actions_exist = "false";
           </td>
         </tr>
         <tr>
-          <td>Start Swapfile during boot and/or installplg:</td>
+          <td>Start Swap file during boot and/or installplg:</td>
           <td>
             <select name="arg2" id="arg2" size="1">
               <?=mk_option($swapfile_cfg['SWAP_ENABLE_ON_BOOT'], "true", "Yes");?>
@@ -605,7 +615,7 @@ $version_actions_exist = "false";
           </td>
         </tr>
         <tr>
-          <td>Delete Swapfile upon Stop (will be recreated during Start):</td>
+          <td>Delete Swap file upon Stop (will be recreated during Start):</td>
           <td>
             <select name="arg3" id="arg3" size="1">
               <?=mk_option($swapfile_cfg['SWAP_DELETE'], "true", "Yes");?>
@@ -617,19 +627,19 @@ $version_actions_exist = "false";
           <td colspan="2">Swapfile Settings</td>
         </tr>
         <tr>
-          <td>Swapfile location (folder):</td>
+          <td>Swap file location (folder):</td>
           <td><input type="text" name="arg4" id="arg4" style="width: 17em;" maxlength="255" value="<?=$swapfile_cfg['SWAP_LOCATION'];?>"></td>
         </tr>
         <tr>
-          <td>Swapfile file name:</td>
+          <td>Swap file file name:</td>
           <td><input type="text" name="arg5" id="arg5" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_FILENAME'];?>"></td>
         </tr>
         <tr>
-          <td>Swapfile swap name:</td>
+          <td>Swap file swap name:</td>
           <td><input type="text" name="arg6" id="arg6" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_NAME'];?>"></td>
         </tr>
         <tr>
-          <td>Swapfile size (example: for 2GB enter 2048):</td>
+          <td>Swap file size (example: for 2GB enter 2048):</td>
           <td><input type="text" name="arg7" id="arg7" style="width: 3em;" maxlength="10" value="<?=$swapfile_cfg['SWAP_SIZE_MB'];?>"> M</td>
         </tr>
       </table>
