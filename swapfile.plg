@@ -478,14 +478,14 @@ $version_actions_exist = "false";
   <div style="border: 0px solid black;">
     Swap file exists:
       <?if ($swapfile_exists == "Yes") :?>
-        <span class="green-text"> &#10004</span>
+        <span class="green-text"><b> &#10004</b></span>
       <?else:?>
-        <span class="orange-text"> &#10006</span>
+        <span class="orange-text"><b> &#10006</b></span>
       <?endif;?>
     <br></br>
     Swap file in use:
     <?if ($swapfile_running == "Yes"):?>
-      <span class="green-text"> &#10004</span>
+      <span class="green-text"><b> &#10004</b></span>
       <br></br>
       Swap file location and filename: <b><?=$swapfile_fullpath?></b>
       <br></br>
@@ -493,26 +493,26 @@ $version_actions_exist = "false";
       <br></br>
       Swap file used: <b><?=printf("%.2f",((float)$swapfile_usage)/1024);?> MB (<?=printf("%.1f",((float)$swapfile_usage)/((float)$swapfile_size)*100);?>%)</b>
     <?else:?>
-      <span class="orange-text"> &#10006</span>
+      <span class="orange-text"><b> &#10006</b></span>
     <?endif;?>
     <br></br>
     <br></br>
     Swapfile Plugin available on hosting server:
       <?if ($plg_server == "0"):?>
         <?if ($plg_online_exist == "0"):?>
-          <span class="green-text"> v<?=$plg_online_ver;?></span>
+          <span class="green-text"><b> v<?=$plg_online_ver;?></b></span>
         <?else:?>
-          <span class="red-text"> No Plugin</span>
+          <span class="red-text"><b> No Plugin</b></span>
         <?endif;?>
       <?else:?>
-          <span class="red-text"> OFFLINE</span>
+          <span class="red-text"><b> OFFLINE</b></span>
       <?endif;?>
     <br></br>
     Swapfile Plugin local version:
       <?if ($plg_loc_ver != "no_local_plg"):?>
-        <span class="green-text"> v<?=$plg_loc_ver;?></span>
+        <span class="green-text"><b> v<?=$plg_loc_ver;?></b></span>
       <?else:?>
-        <span class="red-text"> No Plugin</span>
+        <span class="red-text"><b> No Plugin</b></span>
       <?endif;?>
 
   </div>
