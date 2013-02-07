@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.1
+# Release Version v0.1.1
 ############################################
 
 ############################################
@@ -23,13 +23,13 @@ rm /tmp/swapfile-cleanup
 ############################################
 # configuration file
 ############################################
-# UPGRADE_PLG_ON_BOOT - Check and Install new plugin version if exists on hosting server during boot (true/false)
+# UPGRADE_PLG_ON_BOOT   - Check and Install new plugin version if exists on hosting server during boot (true/false)
 # SWAP_ENABLE_ON_BOOT - Enable Swap File during unRAID boot or installplg (true/false)
-# SWAP_DELETE         - Delete Swap File each time it is unassigned
-# SWAP_LOCATION       - Location of Swap File
-# SWAP_FILENAME       - Filename of Swap File
-# SWAP_NAME           - Name of Swap File mount name
-# SWAP_SIZE_MB        - Size of Swap File
+# SWAP_DELETE                       - Delete Swap File each time it is unassigned
+# SWAP_LOCATION                 - Location of Swap File
+# SWAP_FILENAME                  - Filename of Swap File
+# SWAP_NAME                          - Name of Swap File mount name
+# SWAP_SIZE_MB                    - Size of Swap File
 ############################################
 <FILE Name="/boot/config/plugins/swapfile/swapfile.cfg">
 <INLINE>
@@ -215,18 +215,16 @@ swapfile_updateplg()
         else
           logger -trc.swapfile -plocal7.info -is "Upgrading local plugin (v$SWAP_PLG_LOCAL_VER) to hosting server plugin (v$SWAP_PLG_ONLINE_VER)"
         fi
-        # Download new Swapfile Plugin version
+        # Download new swap file Plugin version
         wget --no-check-certificate --quiet $SWAP_PLG_URL -O /boot/config/plugins/swapfile.plg
-        # Stop Swapfile usage
-        swapfile_stop
-        # Install new Swapfile Plugin
+        # Install new swap file Plugin
         /usr/local/sbin/installplg /boot/config/plugins/swapfile.plg
         logger -trc.swapfile -plocal7.info -is "New/Updated plugin installation complete"
-      # Swapfile plugin hosting server is offline
+      # Swap file plugin hosting server is offline
       else
         logger -trc.swapfile -plocal7.info -is "Local plugin is the same version as on hosting server (v$SWAP_PLG_LOCAL_VER)"
       fi
-    # Web version and local version are the same
+    # Online version and local version are the same
     else
       logger -trc.swapfile -plocal7.info -is "Plugin does not exist on plugin hosting server - Cannot download new plugin"
     fi
