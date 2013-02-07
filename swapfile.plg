@@ -162,7 +162,7 @@ swapfile_getplgversions()
   # Swap file Plugin hosting server
   SWAP_PLG_HOSTING_SERVER="https://github.com/theone11/swapfile_plugin"
   # Swap file Plugin hosting server URL + filename
-  SWAP_PLG_URL="https://raw.github.com/theone11/swapfile_plugin/master/swapfile.plg"
+  SWAP_PLG_URL="https://raw.github.com/theone11/swapfile_plugin/testing/swapfile.plg"
   # Get online/offline status of swap file Plugin hosting server
   wget --quiet --spider --no-check-certificate $SWAP_PLG_HOSTING_SERVER
   SWAP_PLG_HOSTING_SERVER_EXISTS=$?
@@ -375,9 +375,9 @@ fi
 <INLINE>
 <![CDATA[
 # Get icon
-wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
+wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/testing/swapfile.png
 if [ $? == "0" ] ; then
-  wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
+  wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/testing/swapfile.png > /dev/null 2>&1
 else
   logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
 fi
