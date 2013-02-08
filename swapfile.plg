@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.2
+# Release Version v0.2.1
 ############################################
 
 ############################################
@@ -23,20 +23,20 @@ rm /tmp/swapfile-cleanup
 ############################################
 # configuration file
 ############################################
-# UPGRADE_PLG_ON_BOOT   - Check and Install new plugin version if exists on hosting server during boot (true/false)
+# UPGRADE_PLG_ON_BOOT - Check and Install new plugin version if exists on hosting server during boot (true/false)
 # SWAP_ENABLE_ON_BOOT - Enable Swap File during unRAID boot or installplg (true/false)
-# SWAP_DELETE                       - Delete Swap File each time it is unassigned
-# SWAP_LOCATION                 - Location of Swap File
-# SWAP_FILENAME                  - Filename of Swap File
-# SWAP_NAME                          - Name of Swap File mount name
-# SWAP_SIZE_MB                    - Size of Swap File
+# SWAP_DELETE         - Delete Swap File each time it is unassigned
+# SWAP_LOCATION       - Location of Swap File
+# SWAP_FILENAME       - Filename of Swap File
+# SWAP_NAME           - Name of Swap File mount name
+# SWAP_SIZE_MB        - Size of Swap File
 ############################################
 <FILE Name="/boot/config/plugins/swapfile/swapfile.cfg">
 <INLINE>
 <![CDATA[
 # Swap File plugin configuration
 UPGRADE_PLG_ON_BOOT="false"
-SWAP_ENABLE_ON_BOOT="true"
+SWAP_ENABLE_ON_BOOT="false"
 SWAP_DELETE="false"
 SWAP_LOCATION="/mnt/cache"
 SWAP_FILENAME="swapfile"
