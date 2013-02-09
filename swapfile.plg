@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.2.1
+# Release Version v0.2.2
 ############################################
 
 ############################################
@@ -238,21 +238,30 @@ swapfile_updateplg()
 ###################
 swapfile_boot()
 {
+  # Get icon
+  wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
+  if [ $? == "0" ] ; then
+    wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
+    logger -trc.swapfile -plocal7.info -is "Icon downloaded from icon hosting server"
+  else
+    logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
+  fi
+
   # Check if new plugin should be updated on boot
   if [ $UPGRADE_PLG_ON_BOOT == "true" ] ; then
-    logger -trc.swapfile -plocal7.info -is "Checking for swap file plugin update during boot and/or installplg..."
+    logger -trc.swapfile -plocal7.info -is "Checking for swap file plugin update during array mount ..."
     swapfile_updateplg
   # Plugin update should not be done during boot
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file plugin update during boot and/or installplg is disabled"
+    logger -trc.swapfile -plocal7.info -is "Swap file plugin update during array mount is disabled"
   fi
 
   # Check if swap file should be started during boot
   if [ $SWAP_ENABLE_ON_BOOT == "true" ] ; then
-    logger -trc.swapfile -plocal7.info -is "Starting swap file during boot and/or installplg..."
+    logger -trc.swapfile -plocal7.info -is "Starting swap file during array mount ..."
     swapfile_start
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file start during boot and/or installplg is disabled"
+    logger -trc.swapfile -plocal7.info -is "Swap file start during array mount is disabled"
   fi
 }
 
@@ -261,6 +270,7 @@ swapfile_boot()
 ###################
 
 [ -f /boot/config/plugins/swapfile/swapfile.cfg ] && source /boot/config/plugins/swapfile/swapfile.cfg
+[ -f /usr/local/emhttp/plugins/swapfile/swapfile.status ] && source /usr/local/emhttp/plugins/swapfile/swapfile.status
 
 # Swapfile plugin folder on boot flash drive
 SWAP_PLUGIN_PATH="/boot/config/plugins/swapfile"
@@ -352,7 +362,7 @@ fi
 <INLINE>
 <![CDATA[
 #!/bin/bash
-/etc/rc.d/rc.swapfile start
+/etc/rc.d/rc.swapfile boot
 ]]>
 </INLINE>
 </FILE>
@@ -362,28 +372,6 @@ fi
 <![CDATA[
 #!/bin/bash
 /etc/rc.d/rc.swapfile stop
-]]>
-</INLINE>
-</FILE>
-
-############################################
-# Boot file
-############################################
-<FILE Name="/tmp/swapfile_boot_tmp" Run="/bin/bash">
-<INLINE>
-<![CDATA[
-# Get icon
-wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
-if [ $? == "0" ] ; then
-  wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
-else
-  logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
-fi
-
-# Run boot function
-/etc/rc.d/rc.swapfile boot
-# Clean Up
-rm -f /tmp/swapfile_boot_tmp
 ]]>
 </INLINE>
 </FILE>
@@ -458,6 +446,8 @@ for ($i=0; $i<$swapfile_summary_cnt; $i++)
   }
 }
 
+$percentage = round(((float)$swapfile_usage)/((float)$swapfile_size)*100);
+
 $control_actions_exist = "false";
 $version_actions_exist = "false";
 ?>
@@ -487,13 +477,32 @@ $version_actions_exist = "false";
       <br></br>
       Swap file location and filename: <b><?=$swapfile_fullpath?></b>
       <br></br>
-      Swap file size: <b><?=printf("%.2f",((float)$swapfile_size)/1024);?> MB</b>
-      <br></br>
-      Swap file used: <b><?=printf("%.2f",((float)$swapfile_usage)/1024);?> MB (<?=printf("%.1f",((float)$swapfile_usage)/((float)$swapfile_size)*100);?>%)</b>
+      <div>
+        <div style="width: 30%; float:left; border: 0px solid black;">
+          Swap file size: <b><?=printf("%0.1f",$swapfile_size/1024);?> MB</b>
+        </div>
+        <div style="width: 20%; float:left; border: 0px solid black;">
+          used: <b><?=printf("%0.1f",$swapfile_usage/1024);?> MB</b>
+        </div>
+        <div style="width: 45%; float:left; border: 0px solid black;">
+          <?if ($percentage <= 50) :?>
+            <div style="background:#CCCCCC; border:1px solid #666666; height:15px; width:100px;">
+              <div style="background:#6fa239; height:15px; width:<?=$percentage;?>px;"><center><?=$percentage;?>%</center></div>
+            </div>
+          <?elseif ($percentage <= 75) :?>
+            <div style="background:#CCCCCC; border:1px solid #666666; height:15px; width:100px;">
+              <div style="background:#ff9900; height:15px; width:<?=$percentage;?>px;"><center><?=$percentage;?>%</center></div>
+            </div>
+          <?elseif ($percentage <= 100) :?>
+            <div style="background:#CCCCCC; border:1px solid #666666; height:15px; width:100px;">
+              <div style="color:#ffffff; background:#cc0000; height:15px; width:<?=$percentage;?>px;"><center><?=$percentage;?>%</center></div>
+            </div>
+          <?endif;?>
+        </div>
+      </div>
     <?else:?>
       <span class="orange-text"><b> &#10006</b></span>
     <?endif;?>
-    <br></br>
     <br></br>
     Swapfile Plugin available on hosting server:
       <?if ($plg_server == "0"):?>
@@ -615,7 +624,7 @@ $version_actions_exist = "false";
           <td colspan="2">Boot and Startup options</td>
         </tr>
         <tr>
-          <td>Check & Update Plugin during boot and/or installplg:</td>
+          <td>Check & Update Plugin during array mount:</td>
           <td>
             <select name="arg1" id="arg1" size="1">
               <?=mk_option($swapfile_cfg['UPGRADE_PLG_ON_BOOT'], "true", "Yes");?>
@@ -624,7 +633,7 @@ $version_actions_exist = "false";
           </td>
         </tr>
         <tr>
-          <td>Start Swap file during boot and/or installplg:</td>
+          <td>Start Swap file during array mount:</td>
           <td>
             <select name="arg2" id="arg2" size="1">
               <?=mk_option($swapfile_cfg['SWAP_ENABLE_ON_BOOT'], "true", "Yes");?>
