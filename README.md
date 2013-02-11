@@ -12,7 +12,9 @@ To install:
 -----------
 1. Initial Download of plugin at https://raw.github.com/theone11/swapfile_plugin/master/swapfile.plg (future updates can be done via the WEBUI)
 2. Copy plugin to /boot/config/plugins on your flash drive.
-3. Reboot unRAID server or install from command line: installplg /boot/config/plugins/swapfile.plg
+3. Reboot unRAID server or Install from command line:
+   - installplg /boot/config/plugins/swapfile.plg
+   - /etc/rc.d/rc.swapfile boot
 4. Go to plugin WEGUI and change initial settings
 
 The WEBUI is divided into 3 parts:
