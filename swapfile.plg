@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.3
+# Release Version v0.3.1
 ############################################
 
 ############################################
@@ -246,6 +246,12 @@ swapfile_boot()
   else
     logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
   fi
+  if [ -f /boot/config/plugins/swapfile/swapfile.png ] ; then
+    cp /boot/config/plugins/swapfile/swapfile.png /usr/local/emhttp/plugins/swapfile/swapfile.png
+    logger -trc.swapfile -plocal7.info -is "Icon copied to emhttp plugin folder"
+  else
+    logger -trc.swapfile -plocal7.info -is "Icon does not exist locally - cannot copy to emhttp plugin folder"
+  fi  
 
   # Check if new plugin should be updated on boot
   if [ $UPGRADE_PLG_ON_BOOT == "true" ] ; then
@@ -397,13 +403,6 @@ Title="Swap File"
 </FILE>
 
 ############################################
-# WEBUI icon
-############################################
-<FILE Name="/usr/local/emhttp/plugins/swapfile/swapfile.png">
-<LOCAL>/boot/config/plugins/swapfile/swapfile.png</LOCAL>
-</FILE>
-
-############################################
 # WEBUI page
 ############################################
 <FILE Name="/usr/local/emhttp/plugins/swapfile/swapfile.php">
@@ -509,7 +508,7 @@ $version_actions_exist = "false";
         <?if ($plg_online_exist == "0"):?>
           <span class="green-text"><b> v<?=$plg_online_ver;?></b></span>
         <?else:?>
-          <span class="red-text"><b> No Plugin</b></span>
+          <span class="orange-text"><b> No Plugin online</b></span>
         <?endif;?>
       <?else:?>
           <span class="red-text"><b> OFFLINE</b></span>
@@ -517,7 +516,11 @@ $version_actions_exist = "false";
     <br></br>
     Swapfile Plugin local version:
       <?if ($plg_loc_ver != "no_local_plg"):?>
-        <span class="green-text"><b> v<?=$plg_loc_ver;?></b></span>
+        <?if ($plg_loc_ver == $plg_online_ver):?>
+          <span class="green-text"><b> v<?=$plg_loc_ver;?></b></span>
+        <?esle:?>
+          <span class="orange-text"><b> v<?=$plg_loc_ver;?></b></span>
+        <?endif;?>
       <?else:?>
         <span class="red-text"><b> No Plugin</b></span>
       <?endif;?>
