@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.4.1
+# Release Version v0.4.3
 ############################################
 
 ############################################
@@ -16,6 +16,32 @@
 [ -f /etc/rc.d/rc.swapfile ] && rm --force /etc/rc.d/rc.swapfile
 [ -d /usr/local/emhttp/plugins/swapfile ] && rm --force --recursive /usr/local/emhttp/plugins/swapfile
 rm /tmp/swapfile-cleanup
+]]>
+</INLINE>
+</FILE>
+
+############################################
+# Get Icon file
+############################################
+<FILE Name="/tmp/swapfile-icon" Run="/bin/bash">
+<INLINE>
+<![CDATA[
+# Get icon
+wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
+if [ $? == "0" ] ; then
+  wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
+  logger -trc.swapfile -plocal7.info -is "Icon downloaded from icon hosting server"
+else
+  logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
+fi
+if [ -f /boot/config/plugins/swapfile/swapfile.png ] ; then
+  mkdir --parents /usr/local/emhttp/plugins/swapfile
+  cp --force /boot/config/plugins/swapfile/swapfile.png /usr/local/emhttp/plugins/swapfile/swapfile.png
+  logger -trc.swapfile -plocal7.info -is "Icon copied to emhttp plugin folder"
+else
+  logger -trc.swapfile -plocal7.info -is "Icon does not exist locally - cannot copy to emhttp plugin folder"
+fi
+rm /tmp/swapfile-icon
 ]]>
 </INLINE>
 </FILE>
@@ -238,21 +264,6 @@ swapfile_updateplg()
 ###################
 swapfile_boot()
 {
-  # Get icon
-  wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
-  if [ $? == "0" ] ; then
-    wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
-    logger -trc.swapfile -plocal7.info -is "Icon downloaded from icon hosting server"
-  else
-    logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
-  fi
-  if [ -f /boot/config/plugins/swapfile/swapfile.png ] ; then
-    cp --force /boot/config/plugins/swapfile/swapfile.png /usr/local/emhttp/plugins/swapfile/swapfile.png
-    logger -trc.swapfile -plocal7.info -is "Icon copied to emhttp plugin folder"
-  else
-    logger -trc.swapfile -plocal7.info -is "Icon does not exist locally - cannot copy to emhttp plugin folder"
-  fi  
-
   # Check if new plugin should be updated on boot
   if [ $UPGRADE_PLG_ON_BOOT == "true" ] ; then
     logger -trc.swapfile -plocal7.info -is "Checking for swap file plugin update during array mount ..."
@@ -477,13 +488,13 @@ $version_actions_exist = "false";
       Swap file location and filename: <b><?=$swapfile_fullpath?></b>
       <br></br>
       <div>
-        <div style="width: 30%; float:left; border: 0px solid black;">
+        <div style="width: 35%; float:left; border: 0px solid black;">
           Swap file size: <b><?=printf("%0.1f",$swapfile_size/1024);?> MB</b>
         </div>
-        <div style="width: 20%; float:left; border: 0px solid black;">
+        <div style="width: 25%; float:left; border: 0px solid black;">
           used: <b><?=printf("%0.1f",$swapfile_usage/1024);?> MB</b>
         </div>
-        <div style="width: 45%; float:left; border: 0px solid black;">
+        <div style="width: 35%; float:left; border: 0px solid black;">
           <?if ($percentage <= 50) :?>
             <div style="background:#CCCCCC; border:1px solid #666666; height:15px; width:100px;">
               <div style="background:#6fa239; height:15px; width:<?=$percentage;?>px;"><center><?=$percentage;?>%</center></div>
@@ -508,7 +519,7 @@ $version_actions_exist = "false";
         <?if ($plg_online_exist == "0"):?>
           <span class="green-text"><b> v<?=$plg_online_ver;?></b></span>
         <?else:?>
-          <span class="orange-text"><b> No Plugin online</b></span>
+          <span class="orange-text"><b> No online plugin</b></span>
         <?endif;?>
       <?else:?>
           <span class="red-text"><b> OFFLINE</b></span>
@@ -519,10 +530,14 @@ $version_actions_exist = "false";
         <?if ($plg_loc_ver == $plg_online_ver):?>
           <span class="green-text"><b> v<?=$plg_loc_ver;?></b></span>
         <?else:?>
-          <span class="orange-text"><b> v<?=$plg_loc_ver;?></b></span>
+          <?if ($plg_online_exist == "0"):?>
+            <span class="orange-text"><b> v<?=$plg_loc_ver;?></b></span>
+          <?else:?>
+            <span class="green-text"><b> v<?=$plg_loc_ver;?></b></span>
+          <?endif;?>
         <?endif;?>
       <?else:?>
-        <span class="red-text"><b> No Plugin</b></span>
+        <span class="red-text"><b> No local plugin</b></span>
       <?endif;?>
 
   </div>
