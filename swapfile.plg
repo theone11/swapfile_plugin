@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.4.2
+# Release Version v0.4.3
 ############################################
 
 ############################################
@@ -16,6 +16,32 @@
 [ -f /etc/rc.d/rc.swapfile ] && rm --force /etc/rc.d/rc.swapfile
 [ -d /usr/local/emhttp/plugins/swapfile ] && rm --force --recursive /usr/local/emhttp/plugins/swapfile
 rm /tmp/swapfile-cleanup
+]]>
+</INLINE>
+</FILE>
+
+############################################
+# Get Icon file
+############################################
+<FILE Name="/tmp/swapfile-icon" Run="/bin/bash">
+<INLINE>
+<![CDATA[
+# Get icon
+wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
+if [ $? == "0" ] ; then
+  wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
+  logger -trc.swapfile -plocal7.info -is "Icon downloaded from icon hosting server"
+else
+  logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
+fi
+if [ -f /boot/config/plugins/swapfile/swapfile.png ] ; then
+  mkdir --parents /usr/local/emhttp/plugins/swapfile
+  cp --force /boot/config/plugins/swapfile/swapfile.png /usr/local/emhttp/plugins/swapfile/swapfile.png
+  logger -trc.swapfile -plocal7.info -is "Icon copied to emhttp plugin folder"
+else
+  logger -trc.swapfile -plocal7.info -is "Icon does not exist locally - cannot copy to emhttp plugin folder"
+fi
+rm /tmp/swapfile-icon
 ]]>
 </INLINE>
 </FILE>
@@ -238,21 +264,6 @@ swapfile_updateplg()
 ###################
 swapfile_boot()
 {
-  # Get icon
-  wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
-  if [ $? == "0" ] ; then
-    wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
-    logger -trc.swapfile -plocal7.info -is "Icon downloaded from icon hosting server"
-  else
-    logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
-  fi
-  if [ -f /boot/config/plugins/swapfile/swapfile.png ] ; then
-    cp --force /boot/config/plugins/swapfile/swapfile.png /usr/local/emhttp/plugins/swapfile/swapfile.png
-    logger -trc.swapfile -plocal7.info -is "Icon copied to emhttp plugin folder"
-  else
-    logger -trc.swapfile -plocal7.info -is "Icon does not exist locally - cannot copy to emhttp plugin folder"
-  fi  
-
   # Check if new plugin should be updated on boot
   if [ $UPGRADE_PLG_ON_BOOT == "true" ] ; then
     logger -trc.swapfile -plocal7.info -is "Checking for swap file plugin update during array mount ..."
