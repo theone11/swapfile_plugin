@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.4.3
+# Release Version v0.4.4
 ############################################
 
 ############################################
@@ -21,7 +21,33 @@ rm /tmp/swapfile-cleanup
 </FILE>
 
 ############################################
-# Get Icon file
+# configuration file
+############################################
+# UPGRADE_PLG_ON_BOOT - Check and Install new plugin version if exists on hosting server during array mount (true/false)
+# SWAP_ENABLE_ON_BOOT - Enable Swap File during array mount (true/false)
+# SWAP_DELETE         - Delete Swap File each time it is unassigned
+# SWAP_LOCATION       - Location of Swap File
+# SWAP_FILENAME       - Filename of Swap File
+# SWAP_NAME           - Name of Swap File mount name
+# SWAP_SIZE_MB        - Size of Swap File
+############################################
+<FILE Name="/boot/config/plugins/swapfile/swapfile.cfg">
+<INLINE>
+<![CDATA[
+# Swap File plugin configuration
+UPGRADE_PLG_ON_BOOT="false"
+SWAP_ENABLE_ON_BOOT="false"
+SWAP_DELETE="false"
+SWAP_LOCATION="/mnt/cache"
+SWAP_FILENAME="swapfile"
+SWAP_NAME="UNRAID-SWAP"
+SWAP_SIZE_MB="2048"
+]]>
+</INLINE>
+</FILE>
+
+############################################
+# Get Icon file (must be after configuration file creation - needs plugin folder)
 ############################################
 <FILE Name="/tmp/swapfile-icon" Run="/bin/bash">
 <INLINE>
@@ -42,32 +68,6 @@ else
   logger -trc.swapfile -plocal7.info -is "Icon does not exist locally - cannot copy to emhttp plugin folder"
 fi
 rm /tmp/swapfile-icon
-]]>
-</INLINE>
-</FILE>
-
-############################################
-# configuration file
-############################################
-# UPGRADE_PLG_ON_BOOT - Check and Install new plugin version if exists on hosting server during boot (true/false)
-# SWAP_ENABLE_ON_BOOT - Enable Swap File during unRAID boot or installplg (true/false)
-# SWAP_DELETE         - Delete Swap File each time it is unassigned
-# SWAP_LOCATION       - Location of Swap File
-# SWAP_FILENAME       - Filename of Swap File
-# SWAP_NAME           - Name of Swap File mount name
-# SWAP_SIZE_MB        - Size of Swap File
-############################################
-<FILE Name="/boot/config/plugins/swapfile/swapfile.cfg">
-<INLINE>
-<![CDATA[
-# Swap File plugin configuration
-UPGRADE_PLG_ON_BOOT="false"
-SWAP_ENABLE_ON_BOOT="false"
-SWAP_DELETE="false"
-SWAP_LOCATION="/mnt/cache"
-SWAP_FILENAME="swapfile"
-SWAP_NAME="UNRAID-SWAP"
-SWAP_SIZE_MB="2048"
 ]]>
 </INLINE>
 </FILE>
@@ -264,7 +264,7 @@ swapfile_updateplg()
 ###################
 swapfile_boot()
 {
-  # Check if new plugin should be updated on boot
+  # Check if new plugin should be updated during array mount
   if [ $UPGRADE_PLG_ON_BOOT == "true" ] ; then
     logger -trc.swapfile -plocal7.info -is "Checking for swap file plugin update during array mount ..."
     swapfile_updateplg
@@ -273,7 +273,7 @@ swapfile_boot()
     logger -trc.swapfile -plocal7.info -is "Swap file plugin update during array mount is disabled"
   fi
 
-  # Check if swap file should be started during boot
+  # Check if swap file should be started during array mount
   if [ $SWAP_ENABLE_ON_BOOT == "true" ] ; then
     logger -trc.swapfile -plocal7.info -is "Starting swap file during array mount ..."
     swapfile_start
@@ -365,7 +365,7 @@ else
     ;;
 
     *)
-      echo "usage $0 start | stop | restart | updatecfg | implement | writecfg | updateplg | getplgversions"
+      echo "usage $0 start | stop | restart | updatecfg | writecfg | updateplg | getplgversions"
   esac
 fi
 ]]>
@@ -468,7 +468,7 @@ $version_actions_exist = "false";
 
 <div style="width: 49%; float:left; border: 0px solid black;">
   <div id="title">
-    <span class="left">Status summary</span>
+    <span class="left">Status</span>
   </div>
 
   <br></br>
