@@ -27,7 +27,7 @@ The WEBUI is divided into 3 parts:
 
 Configuration Notes:
 --------------------
-1. Boot and Startup options - Change what happens during boot or installplg.
+1. Boot and Startup options - Change what happens during array mount.
 2. Swapfile settings - Change Swap File location, name, etc...
    - Default Swap File location is on the Cache Drive - Change it if you must.
 
