@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.4.5
+# Release Version v0.5
 ############################################
 
 ############################################
@@ -459,6 +459,7 @@ for ($i=0; $i<$swapfile_summary_cnt; $i++)
     $swapfile_usage = $split_string[3];
   }
 }
+shell_exec("rm --force /tmp/swapfile_summary.txt");
 
 $percentage = round(((float)$swapfile_usage)/((float)$swapfile_size)*100);
 
