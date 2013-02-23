@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.4.4
+# Release Version v0.5
 ############################################
 
 ############################################
@@ -162,11 +162,15 @@ swapfile_stop()
 	else
 		logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not running - Nothing to stop"
 	fi
-  if [ "$SWAP_DELETE" == "true" ] ; then
-    rm --force ${SWAP_LOCATION}/${SWAP_FILENAME}
-    logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} removed"
+  if [ -f ${SWAP_LOCATION}/${SWAP_FILENAME} ] ; then
+    if [ "$SWAP_DELETE" == "true" ] ; then
+      rm --force ${SWAP_LOCATION}/${SWAP_FILENAME}
+      logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} removed"
+    else
+      logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not removed"
+    fi
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not removed"
+    logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} does not exist"
   fi
 }
 
@@ -455,6 +459,7 @@ for ($i=0; $i<$swapfile_summary_cnt; $i++)
     $swapfile_usage = $split_string[3];
   }
 }
+shell_exec("rm --force /tmp/swapfile_summary.txt");
 
 $percentage = round(((float)$swapfile_usage)/((float)$swapfile_size)*100);
 
@@ -684,7 +689,7 @@ $version_actions_exist = "false";
           <td><input type="text" name="arg6" id="arg6" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_NAME'];?>"></td>
         </tr>
         <tr>
-          <td>Swap file size (example: for 2GB enter 2048):</td>
+          <td>Swap file size in MBs (example: for 2GB enter 2048):</td>
           <td><input type="text" name="arg7" id="arg7" style="width: 3em;" maxlength="10" value="<?=$swapfile_cfg['SWAP_SIZE_MB'];?>"> MB</td>
         </tr>
       </table>
