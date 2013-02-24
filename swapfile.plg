@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.5.1
+# Release Version v0.5.2
 ############################################
 
 ############################################
@@ -629,6 +629,9 @@ $version_actions_exist = "false";
     </table>
   </div>
 
+  <br></br>
+  <br></br>
+
 </div>
     
 <div style="width: 49%; float:right; border: 0px solid black;">
@@ -699,6 +702,9 @@ $version_actions_exist = "false";
       </table>
     </form>
   </div>
+
+  <br></br>
+  <br></br>
 
 </div>
 
