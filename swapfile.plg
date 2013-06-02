@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.5.2
+# Release Version v0.5.2.1
 ############################################
 
 ############################################
@@ -53,9 +53,9 @@ SWAP_SIZE_MB="2048"
 <INLINE>
 <![CDATA[
 # Get icon
-wget --quiet --spider --no-check-certificate https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
+wget --quiet --spider --no-check-certificate --timeout=60 https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png
 if [ $? == "0" ] ; then
-  wget --quiet --no-check-certificate -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
+  wget --quiet --no-check-certificate --timeout=60 -O /boot/config/plugins/swapfile/swapfile.png https://raw.github.com/theone11/swapfile_plugin/master/swapfile.png > /dev/null 2>&1
   logger -trc.swapfile -plocal7.info -is "Icon downloaded from icon hosting server"
 else
   logger -trc.swapfile -plocal7.info -is "No icon to download from icon hosting server"
@@ -194,16 +194,16 @@ swapfile_getplgversions()
   # Swap file Plugin hosting server URL + filename
   SWAP_PLG_URL="https://raw.github.com/theone11/swapfile_plugin/master/swapfile.plg"
   # Get online/offline status of swap file Plugin hosting server
-  wget --quiet --spider --no-check-certificate $SWAP_PLG_HOSTING_SERVER
+  wget --quiet --spider --no-check-certificate --timeout=60 $SWAP_PLG_HOSTING_SERVER
   SWAP_PLG_HOSTING_SERVER_EXISTS=$?
   # Check if swap file Plugin hosting server is online
   if [ "$SWAP_PLG_HOSTING_SERVER_EXISTS" == "0" ] ; then
     # Check if swap file Plugin file exists online
-    wget --quiet --spider --no-check-certificate $SWAP_PLG_URL
+    wget --quiet --spider --no-check-certificate --timeout=60 $SWAP_PLG_URL
     SWAP_PLG_ONLINE_EXIST=$?
     if [ "$SWAP_PLG_ONLINE_EXIST" == "0" ] ; then
       # Get latest version number from server
-      SWAP_PLG_ONLINE_VER=$(wget --no-check-certificate --quiet $SWAP_PLG_URL -O - | grep -m 1 "Release Version v" | awk 'gsub(/.*Release Version v|*/,"")')
+      SWAP_PLG_ONLINE_VER=$(wget --no-check-certificate --quiet --timeout=60 $SWAP_PLG_URL -O - | grep -m 1 "Release Version v" | awk 'gsub(/.*Release Version v|*/,"")')
     else
       SWAP_PLG_ONLINE_VER="no_online_plg"
     fi
@@ -246,7 +246,7 @@ swapfile_updateplg()
           logger -trc.swapfile -plocal7.info -is "Upgrading local plugin (v$SWAP_PLG_LOCAL_VER) to hosting server plugin (v$SWAP_PLG_ONLINE_VER)"
         fi
         # Download new swap file Plugin version
-        wget --no-check-certificate --quiet $SWAP_PLG_URL -O /boot/config/plugins/swapfile.plg
+        wget --no-check-certificate --quiet --timeout=60 $SWAP_PLG_URL -O /boot/config/plugins/swapfile.plg
         # Install new swap file Plugin
         /usr/local/sbin/installplg /boot/config/plugins/swapfile.plg
         logger -trc.swapfile -plocal7.info -is "New/Updated plugin installation complete"
