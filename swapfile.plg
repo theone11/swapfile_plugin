@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.5.2.1
+# Release Version v0.5.3
 ############################################
 
 ############################################
@@ -684,7 +684,7 @@ $version_actions_exist = "false";
           <td colspan="2">Swapfile Settings (Any change will cause the swap file to be recreated if running)</td>
         </tr>
         <tr>
-          <td>Swap file location (folder):</td>
+          <td>Swap file location (Choose DISK share and not USER share):</td>
           <td><input type="text" name="arg4" id="arg4" style="width: 17em;" maxlength="255" value="<?=$swapfile_cfg['SWAP_LOCATION'];?>"></td>
         </tr>
         <tr>
