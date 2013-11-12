@@ -3,7 +3,7 @@
 
 ############################################
 # Swap File Plugin by Dan Kessler
-# Release Version v0.5.3
+# Release Version v0.5.3.1
 ############################################
 
 ############################################
@@ -81,6 +81,15 @@ rm /tmp/swapfile-icon
 #!/bin/sh
 
 #################
+# L O G I T
+#################
+logit()
+{
+  logger -trc.yamj -plocal7.info -is "$1"
+  echo "$1"
+}
+
+#################
 # W R I T E C F G
 #################
 write_cfg()
@@ -95,7 +104,7 @@ write_cfg()
   echo "SWAP_NAME=\"$SWAP_NAME\"" >> ${SWAP_PLUGIN_PATH}/swapfile.cfg
   echo "SWAP_SIZE_MB=\"$SWAP_SIZE_MB\"" >> ${SWAP_PLUGIN_PATH}/swapfile.cfg
 
-  logger -trc.swapfile -plocal7.info -is "Plugin configuration written"
+  logit "Plugin configuration written"
 }
 
 #################
@@ -121,12 +130,12 @@ swapfile_start()
     SWAP_RUNNING=$(swapon -s | grep ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} | cut -d" " -f1)
 		# Check if swap file already started
     if [ "$SWAP_RUNNING" == "${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}" ] ; then
-			logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} already started"
+			logit "Swap file ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} already started"
 		# Swap file not started
     else
 		  # Turn on swap file usage
       swapon -v ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
-			logger -trc.swapfile -plocal7.info -is " Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} re-used and started"
+			logit " Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} re-used and started"
 		fi
 	# Swap file does not exist
   else
@@ -136,7 +145,7 @@ swapfile_start()
       mkdir --parents ${SWAP_LOCATION_NEW}
     fi
     # Create swap file
-		logger -trc.swapfile -plocal7.info -is "Creating swap file ${SWAP_LOCATION}/${SWAP_FILENAME} please wait ..."
+		logit "Creating swap file ${SWAP_LOCATION}/${SWAP_FILENAME} please wait ..."
     dd if=/dev/zero of=${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} bs=1M count=${SWAP_SIZE_MB_NEW}
 		# Assign SWAP_NAME to the swap file
     mkswap -L ${SWAP_NAME_NEW} ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
@@ -144,7 +153,7 @@ swapfile_start()
     chmod 600 ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
 		# Turn on swap file usage
     swapon -v ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}
-		logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} created and started"
+		logit "Swap file ${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW} created and started"
 	fi
 }
 
@@ -158,19 +167,19 @@ swapfile_stop()
 	if [ "$SWAP_RUNNING" == "${SWAP_LOCATION}/${SWAP_FILENAME}" ] ; then
 		# Turn off swap file usage
     swapoff -v ${SWAP_LOCATION}/${SWAP_FILENAME}
-    logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} stopped"
+    logit "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} stopped"
 	else
-		logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not running - Nothing to stop"
+		logit "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not running - Nothing to stop"
 	fi
   if [ -f ${SWAP_LOCATION}/${SWAP_FILENAME} ] ; then
     if [ "$SWAP_DELETE" == "true" ] ; then
       rm --force ${SWAP_LOCATION}/${SWAP_FILENAME}
-      logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} removed"
+      logit "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} removed"
     else
-      logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not removed"
+      logit "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} not removed"
     fi
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} does not exist"
+    logit "Swap file ${SWAP_LOCATION}/${SWAP_FILENAME} does not exist"
   fi
 }
 
@@ -241,25 +250,25 @@ swapfile_updateplg()
       if [ "$SWAP_PLG_ONLINE_VER" != "$SWAP_PLG_LOCAL_VER" ] ; then
         # Check if local plugin doesn't exist
         if [ "$SWAP_PLG_LOCAL_VER" == "no_local_plg" ] ; then
-          logger -trc.swapfile -plocal7.info -is "Local plugin does not exist. Installing latest plugin version from hosting server (v$SWAP_PLG_ONLINE_VER)"
+          logit "Local plugin does not exist. Installing latest plugin version from hosting server (v$SWAP_PLG_ONLINE_VER)"
         else
-          logger -trc.swapfile -plocal7.info -is "Upgrading local plugin (v$SWAP_PLG_LOCAL_VER) to hosting server plugin (v$SWAP_PLG_ONLINE_VER)"
+          logit "Upgrading local plugin (v$SWAP_PLG_LOCAL_VER) to hosting server plugin (v$SWAP_PLG_ONLINE_VER)"
         fi
         # Download new swap file Plugin version
         wget --no-check-certificate --quiet --timeout=60 $SWAP_PLG_URL -O /boot/config/plugins/swapfile.plg
         # Install new swap file Plugin
         /usr/local/sbin/installplg /boot/config/plugins/swapfile.plg
-        logger -trc.swapfile -plocal7.info -is "New/Updated plugin installation complete"
+        logit "New/Updated plugin installation complete"
       # Swap file plugin hosting server is offline
       else
-        logger -trc.swapfile -plocal7.info -is "Local plugin is the same version as on hosting server (v$SWAP_PLG_LOCAL_VER)"
+        logit "Local plugin is the same version as on hosting server (v$SWAP_PLG_LOCAL_VER)"
       fi
     # Online version and local version are the same
     else
-      logger -trc.swapfile -plocal7.info -is "Plugin does not exist on plugin hosting server - Cannot download new plugin"
+      logit "Plugin does not exist on plugin hosting server - Cannot download new plugin"
     fi
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file Plugin hosting servers is OFFLINE - Cannot check for new packages versions"
+    logit "Swap file Plugin hosting servers is OFFLINE - Cannot check for new packages versions"
   fi
 }
 
@@ -270,19 +279,19 @@ swapfile_boot()
 {
   # Check if new plugin should be updated during array mount
   if [ $UPGRADE_PLG_ON_BOOT == "true" ] ; then
-    logger -trc.swapfile -plocal7.info -is "Checking for swap file plugin update during array mount ..."
+    logit "Checking for swap file plugin update during array mount ..."
     swapfile_updateplg
   # Plugin update should not be done during boot
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file plugin update during array mount is disabled"
+    logit "Swap file plugin update during array mount is disabled"
   fi
 
   # Check if swap file should be started during array mount
   if [ $SWAP_ENABLE_ON_BOOT == "true" ] ; then
-    logger -trc.swapfile -plocal7.info -is "Starting swap file during array mount ..."
+    logit "Starting swap file during array mount ..."
     swapfile_start
   else
-    logger -trc.swapfile -plocal7.info -is "Swap file start during array mount is disabled"
+    logit "Swap file start during array mount is disabled"
   fi
 }
 
@@ -317,7 +326,7 @@ if [ $1 == "updatecfg" ] ; then
     SWAP_DELETE_SAVE=$SWAP_DELETE
     # Check if swap file location of filename changed
     if [ "${SWAP_LOCATION}/${SWAP_FILENAME}" !=  "${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}" ] || [ "$SWAP_NAME" != "$SWAP_NAME_NEW" ] || [ "$SWAP_SIZE_MB" != "$SWAP_SIZE_MB_NEW" ] ; then
-      logger -trc.swapfile -plocal7.info -is "New swap file configuration is being implemented"
+      logit "New swap file configuration is being implemented"
       # Enable deletion of existing swap file (if exists)
       SWAP_DELETE="true"
       # Restart swap file with new configuration (STOP uses "OLD" parameters and "START" uses "NEW" parameters
@@ -325,12 +334,12 @@ if [ $1 == "updatecfg" ] ; then
       # Check if swap file already started
       if [ "$SWAP_RUNNING" == "${SWAP_LOCATION_NEW}/${SWAP_FILENAME_NEW}" ] ; then
         # Recreate and restart swap file
-        logger -trc.swapfile -plocal7.info -is "Restarting swap file with new configuration ..."
+        logit "Restarting swap file with new configuration ..."
         swapfile_restart
       #Swap file not running
       else
         # Just remove existing swap file - will be recreated on next start
-        logger -trc.swapfile -plocal7.info -is "Removing previous existing swap file ..."
+        logit "Removing previous existing swap file ..."
         swapfile_stop
       fi
     fi
