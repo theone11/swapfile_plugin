@@ -5,7 +5,7 @@
 #################
 logit()
 {
-  logger -trc.yamj -plocal7.info -is "$1"
+  logger -trc.swapfile -plocal7.info -is "$1"
   echo "$1"
 }
 
