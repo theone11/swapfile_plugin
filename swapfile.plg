@@ -4,9 +4,11 @@
 <!ENTITY name        "swapfile">
 <!ENTITY author      "Dan Kessler">
 <!ENTITY version     "2015.04.22">
+<!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
 <!ENTITY packageVER  "v1.0">
 <!ENTITY packageMD5  "73a5e99bf362215db82417f128df0111">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
+<!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
 <!ENTITY emhttpLOC   "/usr/local/emhttp/plugins/&name;">
 ]>
