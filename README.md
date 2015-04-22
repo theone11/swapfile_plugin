@@ -1,21 +1,26 @@
-Swap File Plugin for unRAID v5
-=============================
-
-Hello,
-
-I am proud to present the Swapfile plugin for unRAID v5.
+#Swap File Plugin for unRAID v5 and v6
 
 If you are low on memory and would like to add a Swap File to your unRAID server this plugin makes it simpler.
 The plugin enables creation/starting/stopping/changing of a Swap File on your unRAID server.
 
-To install:
------------
-1. Initial Download of plugin at https://raw.github.com/theone11/swapfile_plugin/master/swapfile.plg (future updates can be done via the WEBUI)
+***If this is your first plugin upgrade from version 0.5.3 or before to a newer version (supporting unRAID v6 plugin manager) then I suggest deleting the existing swapfile.plg file at /boot/config/plugins and then install as described below for unRAID v6 - all your settings should remain intact.***
+
+##To install under unRAID v6:
+1. In the unRAID Plugin Manager under "Install Plugin" tab enter https://raw.githubusercontent.com/theone11/swapfile_plugin/master/swapfile.plg
+2. Wait for installation to complete.
+3. Go to plugin WEGUI and change initial settings
+
+##To install under unRAID v5:
+1. Initial Download of plugin at https://raw.githubusercontent.com/theone11/swapfile_plugin/master/swapfile.plg
 2. Copy plugin to /boot/config/plugins on your flash drive.
 3. Reboot unRAID server or Install from command line:
    - installplg /boot/config/plugins/swapfile.plg
    - /etc/rc.d/rc.swapfile boot
 4. Go to plugin WEGUI and change initial settings
+
+##To update the plugin:
+* For WEBUI and functionality updates - Use the unRAID Plugin Manager or the swapfile Plugin WEBUI
+* For new swapfile compiled packages - Use the swapfile Plugin WEBUI
 
 The WEBUI is divided into 3 parts:
 ----------------------------------

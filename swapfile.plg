@@ -6,7 +6,7 @@
 <!ENTITY version     "2015.04.22">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
 <!ENTITY packageVER  "v1.0">
-<!ENTITY packageMD5  "5ee5a69138c392648ed3841c223e5102">
+<!ENTITY packageMD5  "4ec6a938602e7a8d5aedd0eccd039085">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
 <!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
@@ -26,6 +26,7 @@
 <CHANGES>
 #2015.04.22
 - Added support for unRAID v6 Plugin Manager and Architecture
+- Changed timeout to 10 seconds for all network connections (was 60 seconds)
 #0.5.3
 - Added 60 second timeout to all network accesses
 - Added comment regarding swap file location in WEBUI

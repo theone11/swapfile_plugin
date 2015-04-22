@@ -54,6 +54,7 @@ $version_actions_exist = "false";
     <span class="left">Status</span>
   </div>
 
+  <p>unRAID forum thread for <u><a href="http://lime-technology.com/forum/index.php?topic=25816.0" target="_blank">SwapFile Plugin for unRAID v5 and v6</a></u></p>
   <br></br>
 
   <div style="border: 0px solid black;">
@@ -129,7 +130,6 @@ $version_actions_exist = "false";
     <span class="left">Actions</span>
   </div>
 
-  <p>unRAID forum thread for <u><a href="http://lime-technology.com/forum/index.php?topic=25816.0" target="_blank">SwapFile Plugin for unRAID v5 and v6</a></u></p>
   <br></br>
 
   <div>
