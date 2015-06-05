@@ -3,10 +3,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "swapfile">
 <!ENTITY author      "Dan Kessler">
-<!ENTITY version     "2015.04.22">
+<!ENTITY version     "2015.06.05">
+<!ENTITY launch      "Settings/&name;">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
-<!ENTITY packageVER  "v1.0">
-<!ENTITY packageMD5  "4ec6a938602e7a8d5aedd0eccd039085">
+<!ENTITY packageVER  "&version;">
+<!ENTITY packageMD5  "0181cf165330d382defb7d6e25871a06">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
 <!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
@@ -16,14 +17,18 @@
 <PLUGIN  name="&name;"
          author="&author;"
          version="&version;"
+         launch="&launch;"
          pluginURL="&pluginURL;"
 >
 
 <!--
-# Release Version v2015.04.22
+# Release Version v2015.06.05
 -->
 
 <CHANGES>
+#2015.06.05
+- Added launch option from plugin manager (unRAID v6)
+- Changed package version to same as plugin version
 #2015.04.22
 - Added support for unRAID v6 Plugin Manager and Architecture
 - Changed timeout to 10 seconds for all network connections (was 60 seconds)
