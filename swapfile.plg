@@ -3,11 +3,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "swapfile">
 <!ENTITY author      "Dan Kessler">
-<!ENTITY version     "2015.06.05">
+<!ENTITY version     "2015.06.07">
 <!ENTITY launch      "Settings/&name;">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
 <!ENTITY packageVER  "&version;">
-<!ENTITY packageMD5  "0181cf165330d382defb7d6e25871a06">
+<!ENTITY packageMD5  "784b8afb6e0ee29f6af8c75b1aaaf839">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
 <!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
@@ -22,39 +22,41 @@
 >
 
 <!--
-# Release Version v2015.06.05
+# Release Version v2015.06.07
 -->
 
 <CHANGES>
-#2015.06.05
+###2015.06.07
+- Moved plugin icon to "User Utilities" section (unRAID v6)
+###2015.06.05
 - Added launch option from plugin manager (unRAID v6)
 - Changed package version to same as plugin version
-#2015.04.22
+###2015.04.22
 - Added support for unRAID v6 Plugin Manager and Architecture
 - Changed timeout to 10 seconds for all network connections (was 60 seconds)
-#0.5.3
+###0.5.3
 - Added 60 second timeout to all network accesses
 - Added comment regarding swap file location in WEBUI
-#0.5.2
+###0.5.2
 - Fixed bottom of page is sometimes not visible due to unRAID progressframe
-#0.5.1
+###0.5.1
 - Fixed division by zero in usage percentage calculation for usage bar
-#0.5
+###0.5
 - Added existance check before deleting swap file
 - Cleaned up temporary file.
-#0.4.4
+###0.4.4
 - Fixed: Icon file couldn't be saved because plugin folder doesn't exist on first run
-#0.4.3
+###0.4.3
 - Fixed: Icon file deleted when upgrading plugin without restarting server
-#0.4.1
+###0.4.1
 - Fixed: local plugin version not shown
-#0.4
+###0.4
 - Workaround for downloading non exiting icon file
-#0.3
+###0.3
 - Fixed startup sequence - Swap file must be activated only after array mounted
-#0.2.1
+###0.2.1
 - Changed SWAP_ENABLE_ON_BOOT default value to "false"
-#0.2
+###0.2
 - Initial Release
 </CHANGES>
 
@@ -157,9 +159,11 @@ if [ "$INSTALL_PKG" == "true" ] ; then
   UNRAID_OS_BITS=$(getconf LONG_BIT)
   echo "Version=\"&version;\"" &gt;&gt; "&emhttpLOC;/&name;.page"
   if [ "$UNRAID_OS_BITS" == "64" ] ; then
+    echo "Menu=\"Utilities\"" &gt;&gt; "&emhttpLOC;/&name;.page"
     echo "---" &gt;&gt; "&emhttpLOC;/&name;.page"
     echo "&lt;?php include '&emhttpLOC;/php/&name;_main.php';?&gt;" &gt;&gt; "&emhttpLOC;/&name;.page"
   else
+    echo "Menu=\"OtherSettings\"" &gt;&gt; "&emhttpLOC;/&name;.page"
     mv -f "&emhttpLOC;/images/&name;.png" "&emhttpLOC;"
     mv -f "&emhttpLOC;/php/&name;_main.php" "&emhttpLOC;/&name;.php"
   fi
