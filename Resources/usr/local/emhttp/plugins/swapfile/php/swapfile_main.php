@@ -43,6 +43,17 @@ if (((float)$swapfile_size) > 0)
 
 $control_actions_exist = "false";
 $version_actions_exist = "false";
+
+$arr = explode("-", trim(shell_exec("uname -r")), 2);
+if ($arr[0] < "4.1.5")
+{
+  $path_prefix = "/usr/local/emhttp";
+}
+else
+{
+  $path_prefix = "";
+}
+
 ?>
 
 <HTML>
@@ -141,7 +152,8 @@ $version_actions_exist = "false";
         <tr>
           <td width="30%">
             <form name="stop" method="POST" action="/update.htm" target="progressFrame">
-              <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile stop">
+              <input type="hidden" name="cmd" value="<?=$path_prefix;?>/plugins/swapfile/scripts/rc.swapfile">
+              <input type="hidden" name="arg1" value="stop"/>
               <input type="submit" name="runCmd" value="Stop">
             </form>
           </td>
@@ -150,7 +162,8 @@ $version_actions_exist = "false";
         <tr>
           <td width="30%">
             <form name="restart" method="POST" action="/update.htm" target="progressFrame">
-              <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile restart">
+              <input type="hidden" name="cmd" value="<?=$path_prefix;?>/plugins/swapfile/scripts/rc.swapfile">
+              <input type="hidden" name="arg1" value="restart"/>
               <input type="submit" name="runCmd" value="Restart">
             </form>
           </td>
@@ -161,7 +174,8 @@ $version_actions_exist = "false";
         <tr>
           <td width="30%">
             <form name="start" method="POST" action="/update.htm" target="progressFrame">
-              <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile start">
+              <input type="hidden" name="cmd" value="<?=$path_prefix;?>/plugins/swapfile/scripts/rc.swapfile">
+              <input type="hidden" name="arg1" value="start"/>
               <input type="submit" name="runCmd" value="Start">
             </form>
           </td>
@@ -189,7 +203,8 @@ $version_actions_exist = "false";
           <td>ONLINE Plugin version different than LOCAL Plugin version</td>
           <td>
             <form name="updateplg" method="POST" action="/update.htm" target="progressFrame">
-              <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile updateplg">
+              <input type="hidden" name="cmd" value="<?=$path_prefix;?>/plugins/swapfile/scripts/rc.swapfile">
+              <input type="hidden" name="arg1" value="updateplg"/>
               <input type="submit" name="runCmd" value="Update">
             </form>
           </td>
@@ -220,7 +235,8 @@ $version_actions_exist = "false";
       <table>
         <tr>
           <td colspan="2" align="center">
-            <input type="hidden" name="cmd" value="/etc/rc.d/rc.swapfile updatecfg">
+            <input type="hidden" name="cmd" value="<?=$path_prefix;?>/plugins/swapfile/scripts/rc.swapfile">
+            <input type="hidden" name="arg1" value="updatecfg"/>
             <input type="submit" name="runCmd" value="Save Below Configuration & Implement Immediately">
             <button type="button" onClick="done();">Return to unRAID Settings Page</button>
           </td>
@@ -231,7 +247,7 @@ $version_actions_exist = "false";
         <tr>
           <td>Check & Update Plugin during array mount:</td>
           <td>
-            <select name="arg1" id="arg1" size="1">
+            <select name="arg2" id="arg2" size="1">
               <?=mk_option($swapfile_cfg['UPGRADE_PLG_ON_BOOT'], "true", "Yes");?>
               <?=mk_option($swapfile_cfg['UPGRADE_PLG_ON_BOOT'], "false", "No");?>
             </select>
@@ -240,7 +256,7 @@ $version_actions_exist = "false";
         <tr>
           <td>Start Swap file during array mount:</td>
           <td>
-            <select name="arg2" id="arg2" size="1">
+            <select name="arg3" id="arg3" size="1">
               <?=mk_option($swapfile_cfg['SWAP_ENABLE_ON_BOOT'], "true", "Yes");?>
               <?=mk_option($swapfile_cfg['SWAP_ENABLE_ON_BOOT'], "false", "No");?>
             </select>
@@ -249,7 +265,7 @@ $version_actions_exist = "false";
         <tr>
           <td>Delete Swap file upon Stop (will be recreated during Start):</td>
           <td>
-            <select name="arg3" id="arg3" size="1">
+            <select name="arg4" id="arg4" size="1">
               <?=mk_option($swapfile_cfg['SWAP_DELETE'], "true", "Yes");?>
               <?=mk_option($swapfile_cfg['SWAP_DELETE'], "false", "No");?>
             </select>
@@ -260,19 +276,19 @@ $version_actions_exist = "false";
         </tr>
         <tr>
           <td>Swap file location (Choose DISK share and not USER share):</td>
-          <td><input type="text" name="arg4" id="arg4" style="width: 17em;" maxlength="255" value="<?=$swapfile_cfg['SWAP_LOCATION'];?>"></td>
+          <td><input type="text" name="arg5" id="arg5" style="width: 17em;" maxlength="255" value="<?=$swapfile_cfg['SWAP_LOCATION'];?>"></td>
         </tr>
         <tr>
           <td>Swap file file name:</td>
-          <td><input type="text" name="arg5" id="arg5" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_FILENAME'];?>"></td>
+          <td><input type="text" name="arg6" id="arg6" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_FILENAME'];?>"></td>
         </tr>
         <tr>
           <td>Swap file swap name:</td>
-          <td><input type="text" name="arg6" id="arg6" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_NAME'];?>"></td>
+          <td><input type="text" name="arg7" id="arg7" style="width: 17em;" maxlength="25" value="<?=$swapfile_cfg['SWAP_NAME'];?>"></td>
         </tr>
         <tr>
           <td>Swap file size in MBs (example: for 2GB enter 2048):</td>
-          <td><input type="text" name="arg7" id="arg7" style="width: 3em;" maxlength="10" value="<?=$swapfile_cfg['SWAP_SIZE_MB'];?>"> MB</td>
+          <td><input type="text" name="arg8" id="arg8" style="width: 3em;" maxlength="10" value="<?=$swapfile_cfg['SWAP_SIZE_MB'];?>"> MB</td>
         </tr>
       </table>
     </form>

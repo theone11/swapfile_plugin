@@ -3,11 +3,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "swapfile">
 <!ENTITY author      "Dan Kessler">
-<!ENTITY version     "2015.09.xx">
+<!ENTITY version     "2015.09.17">
 <!ENTITY launch      "Settings/&name;">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
 <!ENTITY packageVER  "&version;">
-<!ENTITY packageMD5  "784b8afb6e0ee29f6af8c75b1aaaf839">
+<!ENTITY packageMD5  "f81542d042077433b67a8e77205117eb">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
 <!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
@@ -22,11 +22,11 @@
 >
 
 <!--
-# Release Version v2015.09.xx
+# Release Version v2015.09.17
 -->
 
 <CHANGES>
-###2015.09.xx
+###2015.09.17
 - Add unRAID 6.1 compatibility and keep backward compatibility
 ###2015.06.07
 - Moved plugin icon to "User Utilities" section (unRAID v6)
