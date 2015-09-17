@@ -3,11 +3,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "swapfile">
 <!ENTITY author      "Dan Kessler">
-<!ENTITY version     "2015.06.07">
+<!ENTITY version     "2015.09.17">
 <!ENTITY launch      "Settings/&name;">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
 <!ENTITY packageVER  "&version;">
-<!ENTITY packageMD5  "784b8afb6e0ee29f6af8c75b1aaaf839">
+<!ENTITY packageMD5  "f81542d042077433b67a8e77205117eb">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
 <!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
@@ -22,10 +22,12 @@
 >
 
 <!--
-# Release Version v2015.06.07
+# Release Version v2015.09.17
 -->
 
 <CHANGES>
+###2015.09.17
+- Add unRAID 6.1 compatibility and keep backward compatibility
 ###2015.06.07
 - Moved plugin icon to "User Utilities" section (unRAID v6)
 ###2015.06.05
@@ -153,7 +155,9 @@ if [ "$INSTALL_PKG" == "true" ] ; then
   <!--# Extract files -->
   tar -xf "&pluginLOC;/&packagefile;" -C "/"
   <!-- Make rc.&name executable -->
-  chmod 0770 "/etc/rc.d/rc.&name;"
+  chmod 0770 "&emhttpLOC;/scripts/rc.&name;"
+  <!-- Create symlink to rc file -->
+  ln -s "&emhttpLOC;/scripts/rc.&name;" "/etc/rc.d/rc.&name;"
   <!--# Edit PAGE file depending on unRAID OS type 32/64 bit, also add version number -->
   <!--# Add plugin image to emhttp depending on unRAID OS type 32/64 bit -->
   UNRAID_OS_BITS=$(getconf LONG_BIT)
