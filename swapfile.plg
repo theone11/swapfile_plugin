@@ -3,11 +3,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "swapfile">
 <!ENTITY author      "Dan Kessler">
-<!ENTITY version     "2015.09.17">
+<!ENTITY version     "2015.09.21">
 <!ENTITY launch      "Settings/&name;">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/theone11/&name;_plugin/master/&name;.plg">
 <!ENTITY packageVER  "&version;">
-<!ENTITY packageMD5  "f81542d042077433b67a8e77205117eb">
+<!ENTITY packageMD5  "38cedf80a708dee7def1fa940525fcbe">
 <!ENTITY packagefile "&name;-package-&packageVER;.tar.gz">
 <!ENTITY packageURL  "https://github.com/theone11/&name;_plugin/raw/master/&packagefile;">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
@@ -22,10 +22,12 @@
 >
 
 <!--
-# Release Version v2015.09.17
+# Release Version v2015.09.21
 -->
 
 <CHANGES>
+###2015.09.21
+- Changed start and stop events to "started" and "stopping_svcs" instead of "disks_mounted" and "unmounting_disks" to allow all array and non-array disks to be mounted before creating/using swap file
 ###2015.09.17
 - Add unRAID 6.1 compatibility and keep backward compatibility
 ###2015.06.07
