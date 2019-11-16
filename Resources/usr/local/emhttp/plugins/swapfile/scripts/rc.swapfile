@@ -6,7 +6,6 @@
 logit()
 {
   logger -trc.swapfile -plocal7.info -is "$1"
-  echo "$1"
 }
 
 #################
